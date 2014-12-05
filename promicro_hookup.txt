@@ -1,0 +1,23 @@
+https://dlnmh9ip6v2uc.cloudfront.net/assets/9/c/3/c/4/523a1765757b7f5c6e8b4567.png
+
+0 -> 3 (x2), 8 (x2), knapp
+
+1 -> knapp
+
+2 -> seg1(1)
+3 -> seg1(2)
+4 -> seg1(4)
+5 -> seg1(6)
+6 -> seg1(7)
+7 -> seg1(9)
+8 -> seg1(10)
+9 -> seg1(5)
+
+10 -> seg2(1)
+16 -> seg2(2)
+14 -> seg2(4)
+15 -> seg2(6)
+18 -> seg2(7)
+19 -> seg2(9)
+20 -> seg2(10)
+21 -> seg2(5)
