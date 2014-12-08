@@ -6,7 +6,7 @@ int button = 1;
 #define SEGMENTS 8
 
 int leds[DISPLAYS][SEGMENTS] = {
-  { 6, 7, 4, 3, 2, 7, 8, 9 },
+  { 7, 6, 4, 3, 2, 8, 9, 5 },
   { 18, 15, 14, 16, 10, 19, 20, 21 }
 };
 
@@ -34,7 +34,7 @@ int num[10][8] = {
 
 int ANODE = 0;
 
-
+int writeDots[] = {0, 0};
 void setup() {
   for(int j = 0; j < DISPLAYS; j++) {
     for(int i = 0; i < SEGMENTS; i++) {
@@ -43,13 +43,68 @@ void setup() {
   }
   
   pinMode(ANODE, OUTPUT);
+  pinMode(button, INPUT);
   
   digitalWrite(ANODE, HIGH);
   setAll(-1, HIGH);
 }
 
+int lastButtonState = LOW;
+int buttonState;
+
+long lastDebounceTime = 0;
+long debounceDelay = 50;
+
+long stateChangeDelay = 2000;
+
+int randomNumber=0;
+int randomNumberMax=6;
+
+int state=0;
+int noStates=2;
+
+int writeValue = 0;
+
 void loop() {
+  int reading = digitalRead(button);
+  if(reading != lastButtonState) {
+     lastDebounceTime = millis(); 
+  }
   
+  if((millis() - lastDebounceTime) > debounceDelay) {
+     if(reading != buttonState) {
+        buttonState = reading;
+        if(buttonState == HIGH) {
+          if((millis() - lastDebounceTime) > stateChangeDelay) {
+           state = (state + 1) % noStates; 
+           switch(state) {
+            case 0:
+             writeDots[0] = 0;
+             writeDots[1] = 0;
+             break;
+            case 1:
+              writeDots[0] = 1;
+              writeDots[1] = 1;
+              randomNumberMax = 2;
+              break;
+           }
+          } else {
+           switch(state) {
+            case 0:
+              randomNumber = random(randomNumberMax) + 1;
+              writeValue = randomNumber;
+              break;
+            case 1:
+              randomNumberMax = (randomNumberMax + 1) % 99;
+              writeValue = randomNumberMax;
+              break;
+           } 
+          }
+        }
+     } 
+  }
+  writeNum(writeValue, writeDots);
+  lastButtonState = reading;
 }
 
 
@@ -80,6 +135,10 @@ void writeDigit(int seg, int dig, int dot) {
 }
 
 void writeNum(int num, int dots[]) {
+  if(num == -1) {
+    setAll(-1, HIGH);
+   return; 
+  }
   writeDigit(0, num % 10, dots[0]);
   writeDigit(1, num / 10, dots[1]);
 }
